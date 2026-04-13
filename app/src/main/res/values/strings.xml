@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Gemma Chat</string>
+    <string name="app_description">Offline AI powered by Gemma 4</string>
+</resources>
