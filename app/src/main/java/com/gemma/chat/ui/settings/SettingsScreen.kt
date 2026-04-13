@@ -281,6 +281,31 @@ fun SettingsScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
+                            text = "Dark Mode",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Enforce deep space premium dark theme",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = settings.isDarkTheme,
+                        onCheckedChange = { viewModel.setDarkTheme(it) },
+                        colors = SwitchDefaults.colors(checkedThumbColor = GemmaViolet, checkedTrackColor = GemmaViolet.copy(alpha = 0.4f))
+                    )
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
                             text = "Dynamic Color",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium
@@ -303,7 +328,7 @@ fun SettingsScreen(
 
             // App info
             Text(
-                text = "Gemma Chat v1.0 • Powered by Gemma 4 E2B Q4\nRunning 100% offline via MediaPipe LLM Inference",
+                text = "Gemma Chat v2.0 • Powered by Gemma 4 E2B Q4\nRunning 100% offline via LiteRT-LM Engine",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                 modifier = Modifier.align(Alignment.CenterHorizontally),

@@ -61,6 +61,8 @@ import com.gemma.chat.data.model.MessageRole
 import com.gemma.chat.ui.chat.components.ChatInput
 import com.gemma.chat.ui.chat.components.MessageBubble
 import com.gemma.chat.ui.chat.components.TypingIndicator
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.gemma.chat.ui.theme.GemmaViolet
 import kotlinx.coroutines.launch
 
@@ -77,6 +79,15 @@ fun ChatScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showClearDialog by remember { mutableStateOf(false) }
+
+    // Photo picker for attachments
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        uris.forEach { uri ->
+            viewModel.addAttachment(uri.toString())
+        }
+    }
 
     // Auto-scroll to bottom when new messages arrive or streaming
     LaunchedEffect(uiState.messages.size, uiState.streamingContent) {
@@ -146,6 +157,9 @@ fun ChatScreen(
                 onSend = viewModel::sendMessage,
                 onStop = viewModel::stopGeneration,
                 isGenerating = uiState.isGenerating,
+                attachedMediaUris = uiState.attachedMediaUris,
+                onAttachClick = { photoPickerLauncher.launch("image/*") },
+                onRemoveAttachment = viewModel::removeAttachment,
                 modifier = Modifier.navigationBarsPadding().imePadding()
             )
         }

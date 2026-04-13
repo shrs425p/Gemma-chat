@@ -25,7 +25,8 @@ data class ChatMessage(
     val content: String,
     val timestamp: Long = System.currentTimeMillis(),
     val isError: Boolean = false,
-    val tokenCount: Int = 0
+    val tokenCount: Int = 0,
+    val attachmentUris: List<String> = emptyList()
 )
 
 enum class MessageRole {

@@ -24,7 +24,8 @@ data class ChatUiState(
     val isGenerating: Boolean = false,
     val streamingContent: String = "",
     val error: String? = null,
-    val inputText: String = ""
+    val inputText: String = "",
+    val attachedMediaUris: List<String> = emptyList()
 )
 
 @HiltViewModel
@@ -74,15 +75,19 @@ class ChatViewModel @Inject constructor(
         val input = _uiState.value.inputText.trim()
         if (input.isBlank() || _uiState.value.isGenerating) return
 
-        _uiState.value = _uiState.value.copy(inputText = "", isGenerating = true, error = null)
+        val attachments = _uiState.value.attachedMediaUris.toList()
+        _uiState.value = _uiState.value.copy(inputText = "", attachedMediaUris = emptyList(), isGenerating = true, error = null)
 
         generationJob = viewModelScope.launch {
             try {
-                // Save user message to DB
+                val isFirst = isFirstMessage
+                
+                // Save user message to DB (save the clean input, not the system-prompt injected one)
                 val userMessage = ChatMessage(
                     sessionId = sessionId,
                     role = MessageRole.USER,
-                    content = input
+                    content = input,
+                    attachmentUris = attachments
                 )
                 chatRepository.insertMessage(userMessage)
 
@@ -98,7 +103,14 @@ class ChatViewModel @Inject constructor(
                 val sb = StringBuilder()
                 _uiState.value = _uiState.value.copy(streamingContent = "")
 
-                inferenceEngine.generateStreamingResponse(input).collect { chunk ->
+                val systemPrompt = settingsRepository.settingsFlow.first().systemPrompt
+                val promptToSend = if (isFirst && systemPrompt.isNotBlank()) {
+                    "$systemPrompt\n\n$input"
+                } else {
+                    input
+                }
+
+                inferenceEngine.generateStreamingResponse(promptToSend).collect { chunk ->
                     sb.append(chunk)
                     _uiState.value = _uiState.value.copy(streamingContent = sb.toString())
                 }
@@ -163,5 +175,17 @@ class ChatViewModel @Inject constructor(
 
     fun dismissError() {
         _uiState.value = _uiState.value.copy(error = null)
+    }
+
+    fun addAttachment(uri: String) {
+        val current = _uiState.value.attachedMediaUris.toMutableList()
+        current.add(uri)
+        _uiState.value = _uiState.value.copy(attachedMediaUris = current)
+    }
+
+    fun removeAttachment(uri: String) {
+        val current = _uiState.value.attachedMediaUris.toMutableList()
+        current.remove(uri)
+        _uiState.value = _uiState.value.copy(attachedMediaUris = current)
     }
 }

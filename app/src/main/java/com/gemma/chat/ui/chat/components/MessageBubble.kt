@@ -48,6 +48,10 @@ import com.gemma.chat.data.model.ChatMessage
 import com.gemma.chat.data.model.MessageRole
 import com.gemma.chat.ui.theme.GemmaViolet
 import com.gemma.chat.ui.theme.GemmaVioletLight
+import coil.compose.AsyncImage
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.layout.ContentScale
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -138,6 +142,25 @@ fun MessageBubble(
                     )
                     if (isStreaming && displayContent.isEmpty()) {
                         TypingIndicator()
+                    }
+                }
+
+                if (message.attachmentUris.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(0.9f)
+                    ) {
+                        items(message.attachmentUris) { uri ->
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Attached Image",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
 

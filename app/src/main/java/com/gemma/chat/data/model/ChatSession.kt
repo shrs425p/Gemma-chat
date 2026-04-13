@@ -11,7 +11,8 @@ data class ChatSession(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val systemPrompt: String = DEFAULT_SYSTEM_PROMPT,
-    val messageCount: Int = 0
+    val messageCount: Int = 0,
+    val lastUpdated: Long = System.currentTimeMillis()
 ) {
     companion object {
         const val DEFAULT_SYSTEM_PROMPT = """You are Gemma, a helpful, harmless, and honest AI assistant created by Google. 

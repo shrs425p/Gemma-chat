@@ -24,8 +24,8 @@ data class AppSettings(
     val topP: Float = 0.95f,
     val maxTokens: Int = 2048,
     val systemPrompt: String = "",
-    val isDarkTheme: Boolean = false,
-    val useDynamicColor: Boolean = true,
+    val isDarkTheme: Boolean = true,
+    val useDynamicColor: Boolean = false,
     val streamingEnabled: Boolean = true,
     val contextWindowSize: Int = 10 // number of prior exchanges to include
 )
@@ -55,8 +55,8 @@ class SettingsRepository @Inject constructor(
             topP = prefs[Keys.TOP_P] ?: 0.95f,
             maxTokens = prefs[Keys.MAX_TOKENS] ?: 2048,
             systemPrompt = prefs[Keys.SYSTEM_PROMPT] ?: "",
-            isDarkTheme = prefs[Keys.IS_DARK_THEME] ?: false,
-            useDynamicColor = prefs[Keys.USE_DYNAMIC_COLOR] ?: true,
+            isDarkTheme = prefs[Keys.IS_DARK_THEME] ?: true,
+            useDynamicColor = prefs[Keys.USE_DYNAMIC_COLOR] ?: false,
             streamingEnabled = prefs[Keys.STREAMING_ENABLED] ?: true,
             contextWindowSize = prefs[Keys.CONTEXT_WINDOW_SIZE] ?: 10
         )

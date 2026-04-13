@@ -28,6 +28,9 @@ interface ChatSessionDao {
     @Query("UPDATE chat_sessions SET title = :title, updatedAt = :updatedAt WHERE id = :id")
     suspend fun updateTitle(id: Long, title: String, updatedAt: Long = System.currentTimeMillis())
 
+    @Query("UPDATE chat_sessions SET systemPrompt = :systemPrompt, updatedAt = :updatedAt WHERE id = :id")
+    suspend fun updateSystemPrompt(id: Long, systemPrompt: String, updatedAt: Long = System.currentTimeMillis())
+
     @Query("UPDATE chat_sessions SET updatedAt = :updatedAt, messageCount = messageCount + 1 WHERE id = :id")
     suspend fun incrementMessageCount(id: Long, updatedAt: Long = System.currentTimeMillis())
 }
